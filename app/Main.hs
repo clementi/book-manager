@@ -16,6 +16,7 @@ dispatch = [ ("list", list)
            , ("add", add)
            , ("remove", remove)
            , ("rm", remove)
+           , ("help", help)
            ]
 
 list :: [String] -> IO ()
@@ -26,3 +27,6 @@ add = undefined
 
 remove :: [String] -> IO ()
 remove = undefined
+
+help :: [String] -> IO ()
+help _ = putStrLn "Manage your books. Commands are \"list\", \"add\", \"remove\" or \"rm\", \"help\"."

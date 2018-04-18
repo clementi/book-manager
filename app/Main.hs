@@ -7,8 +7,9 @@ import Books
 main :: IO ()
 main = do
   (cmd:args) <- getArgs
-  let (Just action) = lookup cmd dispatch
-  action args
+  case lookup cmd dispatch of
+    Just action -> action args
+    Nothing -> putStrLn $ "Action \"" ++ cmd ++ "\" not recognized."
 
 dispatch :: [(String, [String] -> IO ())]
 dispatch = [ ("list", list)

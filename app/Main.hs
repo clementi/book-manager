@@ -6,6 +6,9 @@ import System.IO
 
 import qualified Books as B
 
+fileName :: FilePath
+fileName = "books.tsv"
+
 main :: IO ()
 main = do
   args <- getArgs
@@ -27,7 +30,10 @@ dispatch = [ ("list", list)
            ]
 
 list :: [String] -> IO ()
-list _ = B.list
+list _ = withFile fileName ReadMode (\h -> do
+  contents <- hGetContents h
+  let books = B.list contents
+  mapM_ (putStrLn . show) books)
 
 add :: [String] -> IO ()
 add = undefined

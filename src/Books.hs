@@ -16,5 +16,5 @@ fileName = "books.tsv"
 
 list :: IO ()
 list = withFile fileName ReadMode (\h -> do
-                                      contents <- hGetContents h
-                                      putStrLn contents)
+  contents <- hGetContents h
+  putStrLn contents)

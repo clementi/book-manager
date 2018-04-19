@@ -6,10 +6,12 @@ import Books
 
 main :: IO ()
 main = do
-  (cmd:args) <- getArgs
-  case lookup cmd dispatch of
-    Just action -> action args
-    Nothing -> putStrLn $ "Action \"" ++ cmd ++ "\" not recognized."
+  args <- getArgs
+  case args of
+    [] -> putStrLn  "No command provided."
+    (cmd:args') -> case lookup cmd dispatch of
+      Just action -> action args'
+      Nothing -> putStrLn $ "Action \"" ++ cmd ++ "\" not recognized."
 
 dispatch :: [(String, [String] -> IO ())]
 dispatch = [ ("list", list)

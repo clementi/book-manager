@@ -9,9 +9,12 @@ main = do
   args <- getArgs
   case args of
     [] -> putStrLn  "No command provided."
-    (cmd:args') -> case lookup cmd dispatch of
-      Just action -> action args'
-      Nothing -> putStrLn $ "Action \"" ++ cmd ++ "\" not recognized."
+    (cmd:args') -> runCommand cmd args'
+
+runCommand :: String -> [String] -> IO ()
+runCommand cmd args = case lookup cmd dispatch of
+                        Just action -> action args
+                        Nothing -> putStrLn $ "Action \"" ++ cmd ++ "\" not recognized."
 
 dispatch :: [(String, [String] -> IO ())]
 dispatch = [ ("list", list)

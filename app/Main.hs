@@ -1,6 +1,8 @@
 module Main where
 
 import System.Environment
+import System.Exit
+import System.IO
 
 import Books
 
@@ -8,13 +10,15 @@ main :: IO ()
 main = do
   args <- getArgs
   case args of
-    [] -> putStrLn  "No command provided."
+    [] -> do hPutStrLn stderr "No command provided."
+             exitFailure
     (cmd:args') -> runCommand cmd args'
 
 runCommand :: String -> [String] -> IO ()
 runCommand cmd args = case lookup cmd dispatch of
                         Just action -> action args
-                        Nothing -> putStrLn $ "Action \"" ++ cmd ++ "\" not recognized."
+                        Nothing -> do hPutStrLn stderr $ "Action \"" ++ cmd ++ "\" not recognized."
+                                      exitFailure
 
 dispatch :: [(String, [String] -> IO ())]
 dispatch = [ ("list", list)

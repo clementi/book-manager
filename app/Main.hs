@@ -4,7 +4,7 @@ import System.Environment
 import System.Exit
 import System.IO
 
-import Books
+import qualified Books as B
 
 main :: IO ()
 main = do
@@ -27,7 +27,7 @@ dispatch = [ ("list", list)
            ]
 
 list :: [String] -> IO ()
-list = undefined
+list _ = B.list
 
 add :: [String] -> IO ()
 add = undefined

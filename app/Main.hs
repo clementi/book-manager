@@ -27,7 +27,6 @@ dispatch :: [(String, [String] -> IO ())]
 dispatch = [ ("list", list)
            , ("add", add)
            , ("remove", remove)
-           , ("rm", remove)
            , ("help", help)
            ]
 

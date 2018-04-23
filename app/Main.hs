@@ -1,6 +1,7 @@
 module Main where
 
 import Control.Monad
+import Data.List (intercalate)
 import System.Environment
 import System.Exit
 import System.IO
@@ -37,7 +38,7 @@ list _ = withFile fileName ReadMode (\h -> do
   forM_ books putStrBook)
 
 putStrBook :: B.Book -> IO ()
-putStrBook b = putStrLn $ (B.title b) ++ "\t" ++ (B.author b) ++ "\t" ++ (B.isbn b) ++ "\t" ++ (show $ B.pages b)
+putStrBook b = putStrLn $ intercalate "\t" [B.title b, B.author b, B.isbn b, show $ B.pages b]
 
 add :: [String] -> IO ()
 add = undefined

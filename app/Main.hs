@@ -35,10 +35,7 @@ list :: [String] -> IO ()
 list _ = withFile fileName ReadMode (\h -> do
   contents <- hGetContents h
   let books = B.list contents
-  forM_ books putStrBook)
-
-putStrBook :: B.Book -> IO ()
-putStrBook b = putStrLn $ intercalate "\t" [B.title b, B.author b, B.isbn b, show $ B.pages b]
+  forM_ (zip [1..] books) (\(n, b) -> putStrLn $ (show n) ++ " " ++ B.title b))
 
 add :: [String] -> IO ()
 add = undefined

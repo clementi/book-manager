@@ -56,7 +56,7 @@ remove (bookId:_) = withFile fileName ReadMode (\h -> do
       index = (read bookId :: Int) - 1
   case books `atMay` index of
     Just book -> putBooksLn $ delete book books
-    Nothing -> putStrLn $ "No book at " ++ bookId)
+    Nothing -> (putStrLn $ "No book at " ++ bookId) >> exitFailure)
 
 help :: [String] -> IO ()
 help _ = putStrLn "Manage your books. Commands are \"list\", \"add\", \"remove\", \"help\"."

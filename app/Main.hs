@@ -1,7 +1,7 @@
 module Main where
 
 import Control.Monad
-import Data.List (intercalate)
+import Data.List (delete)
 import System.Environment
 import System.Exit
 import System.IO
@@ -37,10 +37,20 @@ list _ = withFile fileName ReadMode (\h -> do
   forM_ (zip [1..] books) (\(n, b) -> putStrLn $ (show n) ++ " " ++ B.title b))
 
 add :: [String] -> IO ()
-add = undefined
+add (title:isbn:author:pages:_) = withFile fileName ReadMode (\h -> do
+  contents <- hGetContents h
+  let books = B.list contents
+      newBook = B.Book title isbn author (read pages :: Int)
+      allBooks = newBook:books
+  forM_ (zip [1..] allBooks) (\(n, b) -> putStrLn $ (show n) ++ " " ++ B.title b))
 
 remove :: [String] -> IO ()
-remove = undefined
+remove (bookId:_) = withFile fileName ReadMode (\h -> do
+  contents <- hGetContents h
+  let books = B.list contents
+      book = books !! ((read bookId :: Int) - 1)
+      remainingBooks = delete book books
+  forM_ (zip [1..] remainingBooks) (\(n, b) -> putStrLn $ (show n) ++ " " ++ B.title b))
 
 help :: [String] -> IO ()
 help _ = putStrLn "Manage your books. Commands are \"list\", \"add\", \"remove\" or \"rm\", \"help\"."

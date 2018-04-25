@@ -10,7 +10,7 @@ data Book = Book { title :: String
                  , isbn :: String
                  , author :: String
                  , pages :: Int
-                 } deriving (Show)
+                 } deriving (Eq, Show)
 
 list :: String -> [Book]
 list contents = map loadBook $ lines contents

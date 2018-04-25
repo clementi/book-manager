@@ -1,7 +1,8 @@
 module Main where
 
 import Control.Monad
-import Data.List (delete)
+import Data.List
+import Safe
 import System.Environment
 import System.Exit
 import System.IO
@@ -51,9 +52,9 @@ remove :: [String] -> IO ()
 remove (bookId:_) = withFile fileName ReadMode (\h -> do
   contents <- hGetContents h
   let books = B.list contents
-      book = books !! ((read bookId :: Int) - 1)
-      remainingBooks = delete book books
-  putBooksLn remainingBooks)
+  case atMay books ((read bookId :: Int) - 1) of
+    Just book -> putBooksLn $ delete book books
+    Nothing -> putStrLn $ "No book at " ++ bookId)
 
 help :: [String] -> IO ()
 help _ = putStrLn "Manage your books. Commands are \"list\", \"add\", \"remove\" or \"rm\", \"help\"."

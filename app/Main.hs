@@ -52,7 +52,7 @@ remove :: [String] -> IO ()
 remove (bookId:_) = withFile fileName ReadMode (\h -> do
   contents <- hGetContents h
   let books = B.list contents
-  case atMay books ((read bookId :: Int) - 1) of
+  case books `atMay` ((read bookId :: Int) - 1) of
     Just book -> putBooksLn $ delete book books
     Nothing -> putStrLn $ "No book at " ++ bookId)
 

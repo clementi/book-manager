@@ -44,7 +44,8 @@ add :: [String] -> IO ()
 add (title:isbn:author:pages:_) = withFile fileName ReadMode (\h -> do
   contents <- hGetContents h
   let books = B.list contents
-      newBook = B.Book title isbn author (read pages :: Int)
+      pageCount = read pages :: Int
+      newBook = B.Book title isbn author pageCount
       allBooks = newBook:books
   putBooksLn allBooks)
 
@@ -52,7 +53,8 @@ remove :: [String] -> IO ()
 remove (bookId:_) = withFile fileName ReadMode (\h -> do
   contents <- hGetContents h
   let books = B.list contents
-  case books `atMay` ((read bookId :: Int) - 1) of
+      index = (read bookId :: Int) - 1
+  case books `atMay` index of
     Just book -> putBooksLn $ delete book books
     Nothing -> putStrLn $ "No book at " ++ bookId)
 

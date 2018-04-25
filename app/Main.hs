@@ -57,4 +57,4 @@ remove (bookId:_) = withFile fileName ReadMode (\h -> do
     Nothing -> putStrLn $ "No book at " ++ bookId)
 
 help :: [String] -> IO ()
-help _ = putStrLn "Manage your books. Commands are \"list\", \"add\", \"remove\" or \"rm\", \"help\"."
+help _ = putStrLn "Manage your books. Commands are \"list\", \"add\", \"remove\", \"help\"."

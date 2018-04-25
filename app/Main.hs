@@ -30,11 +30,14 @@ dispatch = [ ("list", list)
            , ("help", help)
            ]
 
+putBooksLn :: [B.Book] -> IO ()
+putBooksLn books = forM_ (zip [1..] books) (\(n, b) -> putStrLn $ (show n) ++ " " ++ B.title b)
+
 list :: [String] -> IO ()
 list _ = withFile fileName ReadMode (\h -> do
   contents <- hGetContents h
   let books = B.list contents
-  forM_ (zip [1..] books) (\(n, b) -> putStrLn $ (show n) ++ " " ++ B.title b))
+  putBooksLn books)
 
 add :: [String] -> IO ()
 add (title:isbn:author:pages:_) = withFile fileName ReadMode (\h -> do
@@ -42,7 +45,7 @@ add (title:isbn:author:pages:_) = withFile fileName ReadMode (\h -> do
   let books = B.list contents
       newBook = B.Book title isbn author (read pages :: Int)
       allBooks = newBook:books
-  forM_ (zip [1..] allBooks) (\(n, b) -> putStrLn $ (show n) ++ " " ++ B.title b))
+  putBooksLn allBooks)
 
 remove :: [String] -> IO ()
 remove (bookId:_) = withFile fileName ReadMode (\h -> do
@@ -50,7 +53,7 @@ remove (bookId:_) = withFile fileName ReadMode (\h -> do
   let books = B.list contents
       book = books !! ((read bookId :: Int) - 1)
       remainingBooks = delete book books
-  forM_ (zip [1..] remainingBooks) (\(n, b) -> putStrLn $ (show n) ++ " " ++ B.title b))
+  putBooksLn remainingBooks)
 
 help :: [String] -> IO ()
 help _ = putStrLn "Manage your books. Commands are \"list\", \"add\", \"remove\" or \"rm\", \"help\"."

@@ -31,17 +31,6 @@ manage ("add":details) = add details
 manage ("details":n:_) = details (read n :: Int)
 manage ("det":n:_) = manage ["details", n]
 
-{-manage' :: [String] -> IO [B.Book]-}
-{-manage' ("ls":_) = list'-}
-
-{-loadBooks :: IO [B.Book]-}
-{-loadBooks = withFile fileName ReadMode (\h -> do-}
-  {-contents <- hGetContents h-}
-  {-return $ getBooks contents)-}
-
-{-list' :: IO [B.Book]-}
-{-list' = loadBooks-}
-
 list :: IO ()
 list = withFile fileName ReadMode (\h -> do
   contents <- hGetContents h
@@ -84,5 +73,3 @@ putBooksLn books = forM_ (zip [1..] books) (putStrLn . uncurry bookLine)
 
 bookLine :: (Show a) => a -> B.Book -> String
 bookLine n (B.Book title _ author _) = (show n) ++ " " ++ title ++ " (" ++ author ++ ")"
-
-

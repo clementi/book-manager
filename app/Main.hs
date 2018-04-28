@@ -56,7 +56,7 @@ details :: Int -> IO ()
 details n = withFile fileName ReadMode (\h -> do
   contents <- hGetContents h
   let book = (getBooks contents) !! (n - 1)
-   in putStrLn $ show book)
+   in mapM_ putStrLn $ B.toList book)
 
 getBooks :: String -> [B.Book]
 getBooks contents = map parseBook $ lines contents

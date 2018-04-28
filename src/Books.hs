@@ -1,6 +1,7 @@
 module Books
   ( Book (..)
   , fromList
+  , toList
   ) where
 
 import System.IO
@@ -15,3 +16,5 @@ data Book = Book { title :: String
 fromList :: [String] -> Book
 fromList [title, isbn, author, pages] = Book title isbn author (read pages :: Int)
 
+toList :: Book -> [String]
+toList (Book title isbn author pages) = [title, isbn, author, show pages]

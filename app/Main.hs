@@ -34,10 +34,10 @@ manage ("det":n:_) = manage ["details", n]
 {-manage' :: [String] -> IO [B.Book]-}
 {-manage' ("ls":_) = list'-}
 
-loadBooks :: IO [B.Book]
-loadBooks = withFile fileName ReadMode (\h -> do
-  contents <- hGetContents h
-  return $ getBooks contents)
+{-loadBooks :: IO [B.Book]-}
+{-loadBooks = withFile fileName ReadMode (\h -> do-}
+  {-contents <- hGetContents h-}
+  {-return $ getBooks contents)-}
 
 {-list' :: IO [B.Book]-}
 {-list' = loadBooks-}

@@ -1,76 +1,64 @@
 module Main where
 
 import Control.Monad
-import Data.List
-import Safe
 import System.Environment
 import System.Exit
 import System.IO
 
 import qualified Books as B
+import qualified Strings as S
 
 fileName :: FilePath
 fileName = "books.tsv"
 
 main :: IO ()
-main = do
-  args <- getArgs
-  case args of
-    [] -> (hPutStrLn stderr "No command provided.") >> exitFailure
-    (cmd:args') -> runCommand cmd args'
+main = getArgs >>= parse >>= manage
 
-maybeToEither :: e -> Maybe a -> Either e a
-maybeToEither err maybeVal = case maybeVal of
-  Just x -> Right x
-  Nothing -> Left err
+parse :: [String] -> IO [String]
+parse ["-h"] = usage >> exitSuccess
+parse ["-v"] = version >> exitSuccess
+parse args = return args
 
-runCommand :: String -> [String] -> IO ()
-runCommand cmd args = case findAction cmd >>= (\action -> action args) of
-                        Left err -> (hPutStrLn stderr err) >> exitFailure
-                        Right books -> putBooksLn books
+manage :: [String] -> IO ()
+manage ("list":_) = list
+manage ("ls":_) = manage ["list"]
+manage ("remove":n:_) = remove (read n :: Int)
+manage ("rm":n:_) = manage ["remove", n]
+manage ("add":details) = add details
+manage ("details":n:_) = details (read n :: Int)
+manage ("det":n:_) = manage ["details", n]
 
-findAction :: String -> Either String ([String] -> Either String [B.Book])
-findAction cmd = maybeToEither ("Action \"" ++ cmd ++ "\" not recognized.") $ lookup cmd dispatch
+list :: IO ()
+list = withFile fileName ReadMode (\h -> do
+  contents <- hGetContents h
+  putBooksLn $ getBooks contents)
 
-dispatch :: [(String, [String] -> Either String [B.Book])]
-dispatch = [ ("list", list)
-           , ("add", add)
-           , ("remove", remove)
-           ]
+remove :: Int -> IO ()
+remove n = withFile fileName ReadMode (\h -> do
+  contents <- hGetContents h
+  putBooksLn $ getBooks contents)
 
-list :: [String] -> Either String [B.Book]
-list _ = Left "bad!"
+add :: [String] -> IO ()
+add details = putStrLn $ show $ B.fromList details
 
-add :: [String] -> Either String [B.Book]
-add _ = Right []
+details :: Int -> IO ()
+details n = withFile fileName ReadMode (\h -> do
+  contents <- hGetContents h
+  let book = (getBooks contents) !! (n - 1)
+   in putStrLn $ show book)
 
-remove :: [String] -> Either String [B.Book]
-remove _ = Right []
+getBooks :: String -> [B.Book]
+getBooks contents = map parseBook $ lines contents
+
+parseBook :: String -> B.Book
+parseBook line = B.fromList $ S.wordsWhen (=='\t') line
+
+usage :: IO ()
+usage = putStrLn "Usage: manage: [-vh] [cmd ..]"
+
+version :: IO ()
+version = putStrLn "manage 0.1"
 
 putBooksLn :: [B.Book] -> IO ()
 putBooksLn books = forM_ (zip [1..] books) (\(n, b) -> putStrLn $ (show n) ++ " " ++ B.title b)
-
--- list :: [String] -> IO ()
--- list _ = withFile fileName ReadMode (\h -> do
---   contents <- hGetContents h
---   let books = B.list contents
---   putBooksLn books)
-
--- add :: [String] -> IO ()
--- add (title:isbn:author:pages:_) = withFile fileName ReadMode (\h -> do
---   contents <- hGetContents h
---   let books = B.list contents
---       pageCount = read pages :: Int
---       newBook = B.Book title isbn author pageCount
---       allBooks = newBook:books
---   putBooksLn allBooks)
-
--- remove :: [String] -> IO ()
--- remove (bookId:_) = withFile fileName ReadMode (\h -> do
---   contents <- hGetContents h
---   let books = B.list contents
---       index = (read bookId :: Int) - 1
---   case books `atMay` index of
---     Just book -> putBooksLn $ delete book books
---     Nothing -> (putStrLn $ "No book at " ++ bookId) >> exitFailure)
 

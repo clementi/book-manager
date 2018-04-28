@@ -1,6 +1,6 @@
 module Books
   ( Book (..)
-  , list
+  , fromList
   ) where
 
 import System.IO
@@ -12,15 +12,6 @@ data Book = Book { title :: String
                  , pages :: Int
                  } deriving (Eq, Show)
 
-list :: String -> [Book]
-list contents = map loadBook $ lines contents
+fromList :: [String] -> Book
+fromList [title, isbn, author, pages] = Book title isbn author (read pages :: Int)
 
-loadBook :: String -> Book
-loadBook line = let parts = splitWhen (=='\t') line
-                 in Book (parts !! 0) (parts !! 1) (parts !! 2) (read (parts !! 3) :: Int)
-
-add :: Handle -> Book -> [Book] -> IO [Book]
-add _ _ _ = return []
-
-remove :: Handle -> Book -> [Book] -> IO [Book]
-remove _ _ _ = return []

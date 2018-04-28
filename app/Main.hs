@@ -6,8 +6,10 @@ import System.Environment
 import System.Exit
 import System.IO
 
+import Strings
+import Lists
+
 import qualified Books as B
-import qualified Strings as S
 
 fileName :: FilePath
 fileName = "books.tsv"
@@ -61,14 +63,15 @@ add details = withFile fileName ReadWriteMode (\h -> do
 details :: Int -> IO ()
 details n = withFile fileName ReadMode (\h -> do
   contents <- hGetContents h
-  let book = (getBooks contents) !! (n - 1)
-   in mapM_ putStrLn $ B.toList book)
+  case (getBooks contents) `at` (n - 1) of
+    Just book -> mapM_ putStrLn $ B.toList book
+    Nothing -> (hPutStrLn stderr $ "No book at " ++ show n) >> exitFailure)
 
 getBooks :: String -> [B.Book]
 getBooks contents = map parseBook $ lines contents
 
 parseBook :: String -> B.Book
-parseBook line = B.fromList $ S.wordsWhen (=='\t') line
+parseBook line = B.fromList $ wordsWhen (=='\t') line
 
 usage :: IO ()
 usage = putStrLn "Usage: manage: [-vh] [cmd ..]"

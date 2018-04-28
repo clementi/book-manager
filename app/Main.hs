@@ -77,5 +77,9 @@ version :: IO ()
 version = putStrLn "manage 0.1"
 
 putBooksLn :: [B.Book] -> IO ()
-putBooksLn books = forM_ (zip [1..] books) (\(n, b) -> putStrLn $ (show n) ++ " " ++ B.title b ++ " (" ++ B.author b ++ ")")
+putBooksLn books = forM_ (zip [1..] books) (putStrLn . uncurry bookLine)
+
+bookLine :: (Show a) => a -> B.Book -> String
+bookLine n (B.Book title _ author _) = (show n) ++ " " ++ title ++ " (" ++ author ++ ")"
+
 

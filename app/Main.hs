@@ -1,6 +1,7 @@
 module Main where
 
 import Control.Monad
+import Data.List
 import System.Environment
 import System.Exit
 import System.IO
@@ -50,7 +51,12 @@ remove n = withFile fileName ReadMode (\h -> do
   putBooksLn $ getBooks contents)
 
 add :: [String] -> IO ()
-add details = putStrLn $ show $ B.fromList details
+add details = withFile fileName ReadWriteMode (\h -> do
+  contents <- hGetContents h
+  let books = getBooks contents
+      newBook = B.fromList details
+      allBooks = newBook:books
+   in putStrLn $ show $ intercalate "\n" $ map ((intercalate "\t") . B.toList) allBooks)
 
 details :: Int -> IO ()
 details n = withFile fileName ReadMode (\h -> do
@@ -71,5 +77,5 @@ version :: IO ()
 version = putStrLn "manage 0.1"
 
 putBooksLn :: [B.Book] -> IO ()
-putBooksLn books = forM_ (zip [1..] books) (\(n, b) -> putStrLn $ (show n) ++ " " ++ B.title b)
+putBooksLn books = forM_ (zip [1..] books) (\(n, b) -> putStrLn $ (show n) ++ " " ++ B.title b ++ " (" ++ B.author b ++ ")")
 

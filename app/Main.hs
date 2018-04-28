@@ -58,7 +58,7 @@ add details = withFile fileName ReadWriteMode (\h -> do
   let books = getBooks contents
       newBook = B.fromList details
       allBooks = newBook:books
-   in putStrLn $ intercalate "\n" $ map ((intercalate "\t") . B.toList) allBooks)
+   in putBooksLn allBooks)
 
 details :: Int -> IO ()
 details n = withFile fileName ReadMode (\h -> do

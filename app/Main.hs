@@ -38,9 +38,16 @@ list = withFile fileName ReadMode (\h -> do
   putBooksLn $ getBooks contents)
 
 remove :: Int -> IO ()
-remove n = withFile fileName ReadMode (\h -> do
-  contents <- hGetContents h
-  putBooksLn $ getBooks contents)
+remove n = do
+  contents <- S.readFile fileName
+  let books = getBooks contents
+  case books `at` (n - 1) of
+    Just book -> do
+      let newBooks = filter (/=book) books
+          newContents = concat $ map fileBookLine newBooks
+      writeFile fileName newContents
+      putBooksLn newBooks
+    Nothing -> (hPutStrLn stderr $ "No book at " ++ show n) >> exitFailure
 
 add :: [String] -> IO ()
 add details = do

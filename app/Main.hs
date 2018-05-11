@@ -5,6 +5,7 @@ import Data.List
 import System.Environment
 import System.Exit
 import System.IO
+import qualified System.IO.Strict as S
 
 import Strings
 import Lists
@@ -42,12 +43,14 @@ remove n = withFile fileName ReadMode (\h -> do
   putBooksLn $ getBooks contents)
 
 add :: [String] -> IO ()
-add details = withFile fileName ReadWriteMode (\h -> do
-  contents <- hGetContents h
+add details = do
+  contents <- S.readFile fileName
   let books = getBooks contents
       newBook = B.fromList details
       allBooks = newBook:books
-   in putBooksLn allBooks)
+  putBooksLn allBooks
+  let newContents = concat $ map fileBookLine allBooks
+  writeFile fileName newContents
 
 details :: Int -> IO ()
 details n = withFile fileName ReadMode (\h -> do
@@ -73,3 +76,6 @@ putBooksLn books = forM_ (zip [1..] books) (putStrLn . uncurry bookLine)
 
 bookLine :: (Show a) => a -> B.Book -> String
 bookLine n (B.Book title _ author _) = (show n) ++ " " ++ title ++ " (" ++ author ++ ")"
+
+fileBookLine :: B.Book -> String
+fileBookLine book = (concat $ intersperse "\t" $ B.toList book) ++ "\n"

@@ -45,8 +45,8 @@ remove n = do
     Just book -> do
       let newBooks = filter (/=book) books
           newContents = concat $ map fileBookLine newBooks
-      writeFile fileName newContents
       putBooksLn newBooks
+      writeFile fileName newContents
     Nothing -> (hPutStrLn stderr $ "No book at " ++ show n) >> exitFailure
 
 add :: [String] -> IO ()

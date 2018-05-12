@@ -6,8 +6,6 @@ import System.Environment
 import System.Exit
 import System.IO
 
-import qualified System.IO.Strict as S
-
 import Strings
 import Lists
 
@@ -35,43 +33,33 @@ manage ("det":n:_) = manage ["details", n]
 
 list :: IO ()
 list = do
-  contents <- readFile fileName
-  putBooksLn $ getBooks contents
+  books <- B.load
+  putBooksLn books
 
 remove :: Int -> IO ()
 remove n = do
-  contents <- S.readFile fileName
-  let books = getBooks contents
+  books <- B.load
   case books `at` (n - 1) of
     Just book -> do
       let newBooks = filter (/=book) books
-          newContents = concat $ map fileBookLine newBooks
+      B.save newBooks
       putBooksLn newBooks
-      writeFile fileName newContents
     Nothing -> (hPutStrLn stderr $ "No book at " ++ show n) >> exitFailure
 
 add :: [String] -> IO ()
 add details = do
-  contents <- S.readFile fileName
-  let books = getBooks contents
-      newBook = B.fromList details
+  books <- B.load
+  let newBook = B.fromList details
       allBooks = newBook:books
-      newContents = concat $ map fileBookLine allBooks
+  B.save allBooks
   putBooksLn allBooks
-  writeFile fileName newContents
 
 details :: Int -> IO ()
 details n = do
-  contents <- readFile fileName
-  case (getBooks contents) `at` (n - 1) of
+  books <- B.load
+  case books `at` (n - 1) of
     Just book -> mapM_ putStrLn $ B.toList book
     Nothing -> (hPutStrLn stderr $ "No book at " ++ show n) >> exitFailure
-
-getBooks :: String -> [B.Book]
-getBooks contents = map parseBook $ lines contents
-
-parseBook :: String -> B.Book
-parseBook line = B.fromList $ wordsWhen (=='\t') line
 
 usage :: IO ()
 usage = do
@@ -86,6 +74,3 @@ putBooksLn books = forM_ (zip [1..] books) (putStrLn . uncurry bookLine)
 
 bookLine :: (Show a) => a -> B.Book -> String
 bookLine n (B.Book title _ author _) = (show n) ++ " " ++ title ++ " (" ++ author ++ ")"
-
-fileBookLine :: B.Book -> String
-fileBookLine book = (concat $ intersperse "\t" $ B.toList book) ++ "\n"

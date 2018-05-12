@@ -55,8 +55,8 @@ add details = do
   let books = getBooks contents
       newBook = B.fromList details
       allBooks = newBook:books
+      newContents = concat $ map fileBookLine allBooks
   putBooksLn allBooks
-  let newContents = concat $ map fileBookLine allBooks
   writeFile fileName newContents
 
 details :: Int -> IO ()

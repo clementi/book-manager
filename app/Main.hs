@@ -33,9 +33,9 @@ manage ("details":n:_) = details (read n :: Int)
 manage ("det":n:_) = manage ["details", n]
 
 list :: IO ()
-list = withFile fileName ReadMode (\h -> do
-  contents <- hGetContents h
-  putBooksLn $ getBooks contents)
+list = do
+  contents <- readFile fileName
+  putBooksLn $ getBooks contents
 
 remove :: Int -> IO ()
 remove n = do
@@ -60,11 +60,11 @@ add details = do
   writeFile fileName newContents
 
 details :: Int -> IO ()
-details n = withFile fileName ReadMode (\h -> do
-  contents <- hGetContents h
+details n = do
+  contents <- readFile fileName
   case (getBooks contents) `at` (n - 1) of
     Just book -> mapM_ putStrLn $ B.toList book
-    Nothing -> (hPutStrLn stderr $ "No book at " ++ show n) >> exitFailure)
+    Nothing -> (hPutStrLn stderr $ "No book at " ++ show n) >> exitFailure
 
 getBooks :: String -> [B.Book]
 getBooks contents = map parseBook $ lines contents
@@ -73,7 +73,9 @@ parseBook :: String -> B.Book
 parseBook line = B.fromList $ wordsWhen (=='\t') line
 
 usage :: IO ()
-usage = putStrLn "Usage: manage: [-vh] [cmd ..]"
+usage = do
+  progName <- getProgName
+  putStrLn $ "Usage: " ++ progName ++ " [-vh] [cmd ..]"
 
 version :: IO ()
 version = putStrLn "manage 0.1"

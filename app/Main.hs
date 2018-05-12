@@ -5,6 +5,7 @@ import Data.List
 import System.Environment
 import System.Exit
 import System.IO
+
 import qualified System.IO.Strict as S
 
 import Strings

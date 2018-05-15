@@ -18,6 +18,7 @@ main :: IO ()
 main = getArgs >>= parse >>= manage
 
 parse :: [String] -> IO [String]
+parse [] = parse ["-h"]
 parse ["-h"] = usage >> exitSuccess
 parse ["-v"] = version >> exitSuccess
 parse args = return args

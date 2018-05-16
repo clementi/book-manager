@@ -29,8 +29,10 @@ manage ("ls":_) = manage ["list"]
 manage ("remove":n:_) = remove (read n :: Int)
 manage ("rm":n:_) = manage ["remove", n]
 manage ("add":details) = add details
+manage ("ad":details) = add details
 manage ("details":n:_) = details (read n :: Int)
 manage ("det":n:_) = manage ["details", n]
+manage ("de":n:_) = manage ["details", n]
 
 list :: IO ()
 list = do
@@ -66,6 +68,7 @@ usage :: IO ()
 usage = do
   progName <- getProgName
   putStrLn $ "Usage: " ++ progName ++ " [-vh] [cmd ..]"
+  putStrLn $ "  [cmd] is list/ls, remove/rm, add/ad, details/det/de"
 
 version :: IO ()
 version = putStrLn "manage 0.1"

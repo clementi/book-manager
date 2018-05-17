@@ -24,12 +24,21 @@ parse ["-v"] = version >> exitSuccess
 parse args = return args
 
 manage :: [String] -> IO ()
-manage ("list":_) = list
-manage ("ls":_) = manage ["list"]
+manage ["list"] = list
+manage ["ls"] = manage ["list"]
+manage ("list":parms) = (hPutStrLn stderr $ "Unknown parameters " ++ show parms ++ ".") >> exitFailure
+manage ("ls":parms) = manage ("list":parms)
 manage ("remove":n:_) = remove (read n :: Int)
+manage ["remove"] = (hPutStrLn stderr $ "Number required.") >> exitFailure
+manage ["rm"] = manage ["remove"]
 manage ("rm":n:_) = manage ["remove", n]
+manage ["add"] = (hPutStrLn stderr $ "Details required.") >> exitFailure
+manage ["ad"] = manage ["add"]
 manage ("add":details) = add details
 manage ("ad":details) = add details
+manage ["details"] = (hPutStrLn stderr $ "Number required.") >> exitFailure
+manage ["det"] = manage ["details"]
+manage ["de"] = manage ["details"]
 manage ("details":n:_) = details (read n :: Int)
 manage ("det":n:_) = manage ["details", n]
 manage ("de":n:_) = manage ["details", n]

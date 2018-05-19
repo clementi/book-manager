@@ -80,7 +80,9 @@ usage = do
   putStrLn $ "  [cmd] is list/ls, remove/rm, add/ad, details/det/de"
 
 version :: IO ()
-version = putStrLn "manage 0.1"
+version = do
+  progName <- getProgName
+  putStrLn $ progName ++ " 0.1"
 
 putBooksLn :: [B.Book] -> IO ()
 putBooksLn books = forM_ (zip [1..] books) (putStrLn . uncurry bookLine)

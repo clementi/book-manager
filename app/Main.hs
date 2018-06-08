@@ -43,9 +43,7 @@ manage ("det":n:_) = manage ["details", n]
 manage ("de":n:_) = manage ["details", n]
 
 list :: IO ()
-list = do
-  books <- B.load
-  putBooksLn books
+list = B.load >>= putBooksLn
 
 remove :: Int -> IO ()
 remove n = do

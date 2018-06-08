@@ -41,7 +41,7 @@ getBooks :: String -> [Book]
 getBooks contents = map parseBook $ lines contents
 
 parseBook :: String -> Book
-parseBook line = fromList $ breakOn (=='\t') line
+parseBook line = fromList $ segmentOn (=='\t') line
 
 fileBookLine :: Book -> String
 fileBookLine book = (concat $ intersperse "\t" $ toList book) ++ "\n"

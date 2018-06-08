@@ -10,7 +10,7 @@ import Data.List
 
 import qualified System.IO.Strict as S
 
-import Strings
+import Lists
 
 data Book = Book { title :: String
                  , isbn :: String
@@ -41,7 +41,7 @@ getBooks :: String -> [Book]
 getBooks contents = map parseBook $ lines contents
 
 parseBook :: String -> Book
-parseBook line = fromList $ wordsWhen (=='\t') line
+parseBook line = fromList $ breakOn (=='\t') line
 
 fileBookLine :: Book -> String
 fileBookLine book = (concat $ intersperse "\t" $ toList book) ++ "\n"

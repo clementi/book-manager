@@ -6,7 +6,6 @@ import System.Environment
 import System.Exit
 import System.IO
 
-import Strings
 import Lists
 
 import qualified Books as B

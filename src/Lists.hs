@@ -5,9 +5,9 @@ module Lists
 
 at :: [a] -> Int -> Maybe a
 at [] _ = Nothing
-at xs index = if index >= length xs || index < 0
-                 then Nothing
-                 else Just (xs !! index)
+at xs index
+  | index >= length xs || index < 0 = Nothing
+  | otherwise = Just (xs !! index)
 
 segmentOn :: (a -> Bool) -> [a] -> [[a]]
 segmentOn p xs = case dropWhile p xs of

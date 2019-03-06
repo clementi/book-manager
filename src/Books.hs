@@ -38,10 +38,10 @@ save books = do
   writeFile fileName contents
 
 getBooks :: String -> [Book]
-getBooks contents = map parseBook $ lines contents
+getBooks = map parseBook . lines
 
 parseBook :: String -> Book
-parseBook line = fromList $ segmentOn (=='\t') line
+parseBook = fromList . segmentOn (=='\t')
 
 fileBookLine :: Book -> String
 fileBookLine book = (concat $ intersperse "\t" $ toList book) ++ "\n"

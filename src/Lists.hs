@@ -3,10 +3,10 @@ module Lists
   , segmentOn
   ) where
 
+import Data.Maybe (listToMaybe)
+
 at :: [a] -> Int -> Maybe a
-at xs index
-  | index >= length xs || index < 0 = Nothing
-  | otherwise = Just (xs !! index)
+at xs index = listToMaybe . drop index $ xs
 
 segmentOn :: (a -> Bool) -> [a] -> [[a]]
 segmentOn p xs = case dropWhile p xs of

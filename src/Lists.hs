@@ -4,7 +4,6 @@ module Lists
   ) where
 
 at :: [a] -> Int -> Maybe a
-at [] _ = Nothing
 at xs index
   | index >= length xs || index < 0 = Nothing
   | otherwise = Just (xs !! index)
